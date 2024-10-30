@@ -23,6 +23,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>animal-sniffer-maven-plugin</artifactId>
+        <version>1.16</version>
         <configuration>
           <!-- Signatures cannot be determined and will error unless excluded.  This is isolated to
                code otherwise already marked for removal in the module artifact. -->
@@ -64,6 +65,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.0.0</version>
         <executions>
           <execution>
             <phase>process-classes</phase>
@@ -73,10 +75,10 @@
           </execution>
         </executions>
         <configuration>
-          <tasks>
+          <target>
             <echo>Removing slf4j-api's dummy StaticLoggerBinder and StaticMarkerBinder</echo>
             <delete dir="target/classes/org/slf4j/impl"/>
-          </tasks>
+          </target>
         </configuration>
       </plugin>
     </plugins>
