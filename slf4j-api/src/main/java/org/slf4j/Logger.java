@@ -61,6 +61,7 @@ package org.slf4j;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
+// 日志记录器
 public interface Logger {
 
     /**

@@ -39,6 +39,18 @@ import java.util.Iterator;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
+
+/**
+ * Marker用于给日志事件添加一个额外的、不携带值的分类标签，
+ * 用于标识日志消息的某种特性或类别。它是一种静态的、逻辑上的标记，
+ * 不随线程变化。
+ *
+ * Marker可以用来区分不同类型的日志事件，比如错误日志、安全审计日志、
+ * 性能监控日志等，使得在日志分析时能够更容易地过滤和识别出感兴趣的日志条目。
+ *
+ * Marker是全局的、可共享的，可以在多个地方重复使用，
+ * 不绑定到任何特定的执行线程或上下文。
+ */
 public interface Marker extends Serializable {
 
     /**

@@ -61,6 +61,18 @@ import org.slf4j.spi.MDCAdapter;
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.4.1
  */
+
+/**
+ * 我们在使用日志框架输入日志的时候，常规情况，
+ * 在一个请求中所输出的日志之间是没有关系的，
+ * 即并不知道哪些日志是某一次请求而输出的。
+ *
+ * 为了能更好的能从请求维度追踪日志，
+ * 我们需要在日志中添加"请求标识"。
+ * 在slf4j日志框架中提供了MDC
+ * （Mapped Diagnostic Context，映射诊断上下文）
+ * 机制来实现
+ */
 public class MDC {
 
     static final String NULL_MDCA_URL = "http://www.slf4j.org/codes.html#null_MDCA";

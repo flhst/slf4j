@@ -63,14 +63,27 @@ public final class Util {
      * inside this package.
      */
     private static final class ClassContextSecurityManager extends SecurityManager {
+        // 返回当前线程的类上下文数组，这对于日志记录、调试和其他需要了解调用栈信息的场景非常有用。
         protected Class<?>[] getClassContext() {
             return super.getClassContext();
         }
     }
 
     private static ClassContextSecurityManager SECURITY_MANAGER;
+    // 是否已经尝试创建SecurityManager
     private static boolean SECURITY_MANAGER_CREATION_ALREADY_ATTEMPTED = false;
 
+    /**
+     * 获取ClassContextSecurityManager实例
+     * 1、检查已存在的实例：
+     *      如果 SECURITY_MANAGER 已经被初始化，则直接返回该实例。
+     * 2、检查是否已经尝试过创建：
+     *      如果已经尝试过创建但失败了，则返回 null。
+     * 3、创建新实例：
+     *      如果上述两个条件都不满足，则调用 safeCreateSecurityManager
+     *      方法尝试创建一个新的 ClassContextSecurityManager 实例，并将其赋值给 SECURITY_MANAGER，同时将 SECURITY_MANAGER_CREATION_ALREADY_ATTEMPTED 标记为 true，最后返回新创建的实例。
+     * @return
+     */
     private static ClassContextSecurityManager getSecurityManager() {
         if (SECURITY_MANAGER != null)
             return SECURITY_MANAGER;
@@ -83,6 +96,7 @@ public final class Util {
         }
     }
 
+    // 用于安全创建SecurityManager实例
     private static ClassContextSecurityManager safeCreateSecurityManager() {
         try {
             return new ClassContextSecurityManager();
@@ -96,6 +110,24 @@ public final class Util {
      *
      * @return the name of the class which called the invoking method.
      */
+    /**
+     * 返回调用调用方法的类（Class）
+     * 1、获取 SecurityManager 实例：
+     *      调用 getSecurityManager 方法获取 ClassContextSecurityManager 实例。
+     * 2、检查 SecurityManager 实例是否存在：
+     *      如果 SecurityManager 实例为 null，直接返回 null。
+     * 3、获取调用栈：
+     *      调用 securityManager.getClassContext() 获取当前线程的调用栈。
+     * 4、查找 Util 类的位置：
+     *      遍历调用栈，找到 Util 类的位置。
+     * 5、验证调用栈的有效性：
+     *      检查 Util 类及其调用者在调用栈中是否存在，
+     *      如果不存在则抛出 IllegalStateException 异常。
+     * 6、返回调用者的调用者：
+     *      返回调用 Util 类的方法的调用者的类。
+     * @return
+     */
+    // 返回调用调用方法的类（Class）
     public static Class<?> getCallingClass() {
         ClassContextSecurityManager securityManager = getSecurityManager();
         if (securityManager == null)

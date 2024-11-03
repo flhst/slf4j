@@ -44,15 +44,22 @@ import org.slf4j.event.SubstituteLoggingEvent;
  * @author Chetan Mehrotra
  * @author Ceki Gulcu
  */
+// SubstituteLogger 类实现了Logger接口，提供了一个替代的日志记录器实现
 public class SubstituteLogger implements Logger {
 
+    // 日志记录器名称
     private final String name;
+    // 实际的日志记录器，可以动态设置
     private volatile Logger _delegate;
+    // 标记委托日志记录器是否支持事件感知。
     private Boolean delegateEventAware;
+    // 缓存的 log 方法反射对象。
     private Method logMethodCache;
+    // 事件记录日志记录器实例。
     private EventRecodingLogger eventRecodingLogger;
+    // 事件队列，用于存储日志事件。
     private Queue<SubstituteLoggingEvent> eventQueue;
-
+    // 标记日志记录器是否在初始化后创建。
     private final boolean createdPostInitialization;
     
     public SubstituteLogger(String name, Queue<SubstituteLoggingEvent> eventQueue, boolean createdPostInitialization) {
@@ -329,6 +336,13 @@ public class SubstituteLogger implements Logger {
      * Return the delegate logger instance if set. Otherwise, return a {@link NOPLogger}
      * instance.
      */
+    /**
+     * 返回当前 SubstituteLogger 实例的委托日志记录器 _delegate。
+     * 如果 _delegate 未设置，则根据 createdPostInitialization 的
+     * 值决定返回 NOPLogger.NOP_LOGGER 还是
+     * getEventRecordingLogger()。
+     * @return
+     */
     Logger delegate() {
         if(_delegate != null) {
             return _delegate;
@@ -355,6 +369,14 @@ public class SubstituteLogger implements Logger {
         this._delegate = delegate;
     }
 
+    /**
+     * 检查委托日志记录器 _delegate 是否支持 log 方法
+     * 1、首先检查 delegateEventAware 是否已经初始化，如果已初始化则直接返回其值。
+     * 2、如果没有初始化，则尝试通过反射获取 _delegate 类的 log 方法，该方法接受一个 LoggingEvent 参数。
+     * 3、如果成功获取到方法，将 delegateEventAware 设置为 true；如果抛出 NoSuchMethodException 异常，将 delegateEventAware 设置为 false。
+     * 4、最终返回 delegateEventAware 的值。
+     * @return
+     */
     public boolean isDelegateEventAware() {
         if (delegateEventAware != null)
             return delegateEventAware;
